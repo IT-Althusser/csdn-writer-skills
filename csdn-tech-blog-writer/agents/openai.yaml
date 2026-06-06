@@ -1,0 +1,4 @@
+interface:
+  display_name: "CSDN 技术博客写作"
+  short_description: "根据 Java 知识点、课程笔记、项目代码和评分反馈写 CSDN 博客"
+  default_prompt: "Use $csdn-tech-blog-writer to write a CSDN-ready Java technical article from my notes, project code, knowledge point, draft, or scoring feedback. First identify the article type, keep the topic boundary, and give an outline before the full draft unless I ask for direct writing."
