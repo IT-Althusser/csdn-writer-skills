@@ -1,24 +1,20 @@
 # csdn-writer-skills
 
-`csdn-writer-skills` 是一个面向 Codex 的本地 skills 仓库，目前主要用于辅助生成中文技术博客，尤其适合 Java、Spring Boot、MyBatis、MySQL 等后端项目的 CSDN 写作场景。
+`csdn-writer-skills` 是一个给 Codex 使用的 CSDN 技术博客写作 skill 仓库。当前主力 skill 是 `csdn-tech-blog-writer`，用于把 Java / Spring Boot / MyBatis / MySQL 项目代码、课程 dayXX 笔记、单个技术知识点、用户草稿和评分反馈，整理成可发布的 CSDN Markdown 文章。
 
-这个仓库当前包含一个可直接使用的 skill：
+这版重写的重点不是“多放模板”，而是把写作流程收束成一套稳定协议：先判断文章类型，先锁用户材料边界，再用代码和当前官方文档补证据，最后交付能直接发布的正文。
 
-- `csdn-tech-blog-writer`：根据代码、项目目录、技术主题、SQL、配置文件或已有博客样本，生成适合发布到 CSDN 的 Markdown 技术博客。
+## 核心变化
 
-## 仓库定位
-
-这个仓库不是一个独立运行的后端项目，也不是命令行工具，而是给 Codex 使用的本地 skill 集合。
-
-它的目标很明确：
-
-- 把项目代码整理成结构清晰的技术博客
-- 把 Controller、Service、Mapper 等三层代码讲明白
-- 支持知识点文章、项目实战文章、系列文章和润色续写
-- 尽量贴近个人 CSDN 写作风格
-- 降低重复写博客时的整理成本
-
-如果你经常需要把 JavaWeb 项目、Spring Boot 项目、MyBatis 代码或学习笔记整理成博客，这个 skill 会比较适合。
+- 新文章默认先输出文章架构，用户确认后再写完整正文。
+- 明确区分知识点文、课程笔记文、项目功能文、低分重写和风格润色。
+- 课程 dayXX 笔记文必须以用户笔记为边界，不把另一篇功能实战混进来。
+- 知识点文按场景、概念、最小代码、执行流程、常见坑和验证方式写，不强行凑三层架构。
+- 项目功能文才展开 Controller -> Service -> Mapper/SQL 闭环。
+- 70/77/82 分这类低分反馈必须先找扣分原因，再重选主线重写。
+- 涉及库、框架、API、CLI 或云服务时，按工作区规则使用 `ctx7` 查询当前文档。
+- 配置文件、密码、Token、Secret、AccessKey、真实 IP、手机号、邮箱必须脱敏。
+- 引用、加粗、内联反引号要克制使用，交付前做格式数量自检。
 
 ## 目录结构
 
@@ -26,146 +22,113 @@
 csdn-writer-skills/
   skills/
     csdn-tech-blog-writer/
-      agents/                 # Codex 相关元数据
-      checklists/             # 生成前后的质量检查清单
-      templates/              # 不同类型博客的结构模板
-      README.md               # skill 使用说明
-      SKILL.md                # skill 核心规则
+      agents/
+        openai.yaml
+      references/
+        core-writing-protocol.md
+      SKILL.md
   examples/
-    prompt-examples.md        # 提示词示例
-    sample-inputs.md          # 输入材料示例
+    prompt-examples.md
+    sample-inputs.md
   CONTRIBUTING.md
   LICENSE
   README.md
 ```
 
-## 内置 Skill
+`SKILL.md` 只保留触发描述、硬性执行顺序和关键规则。详细写作协议集中在 `references/core-writing-protocol.md`，触发 skill 后再读取，避免旧版那种模板和规则分散导致跑题。
 
-### `csdn-tech-blog-writer`
+## 安装
 
-这个 skill 适合处理下面几类任务：
+### 使用 GitHub 路径安装
 
-- 根据 Java / Spring Boot / MyBatis / MySQL 项目生成 CSDN 博客
-- 根据 Controller、Service、Mapper、XML、SQL 等核心代码生成项目实战文章
-- 根据 `ThreadLocal`、Spring 事务、MyBatis 动态 SQL、Redis 缓存等主题生成知识点文章
-- 对已经写了一半的博客进行润色、续写和结构优化
-- 根据已有博客样本学习个人写作风格，再生成新的文章
-- 将一个项目拆成多篇系列博客
+在 Codex 中使用 skill installer 安装：
 
-它现在对 Tlias / JavaWeb 项目类型博客做了专门优化，会优先按照“小功能需求 -> 三层代码 -> 文字说明 -> 涉及知识点”的方式生成内容，避免只写空泛项目概览。
-
-## 快速安装
-
-### 1. 克隆仓库
-
-```powershell
-git clone https://github.com/IT-Althusser/csdn-writer-skills.git
-cd csdn-writer-skills
+```text
+安装这个 skill：https://github.com/IT-Althusser/csdn-writer-skills/tree/main/skills/csdn-tech-blog-writer
 ```
 
-### 2. 复制 skill 到 Codex 本地 skills 目录
+安装后重启 Codex。
+
+### 手动复制
 
 Windows：
 
 ```powershell
+git clone https://github.com/IT-Althusser/csdn-writer-skills.git
+cd csdn-writer-skills
 Copy-Item -Recurse -Force .\skills\csdn-tech-blog-writer $HOME\.codex\skills\
 ```
 
 macOS / Linux：
 
 ```bash
+git clone https://github.com/IT-Althusser/csdn-writer-skills.git
+cd csdn-writer-skills
 cp -R ./skills/csdn-tech-blog-writer ~/.codex/skills/
 ```
 
-### 3. 重启 Codex
+复制完成后重启 Codex。
 
-复制完成后，重启 Codex，让本地 skill 生效。
+## 使用示例
 
-### 4. 调用 skill
-
-示例：
+先出架构：
 
 ```text
-[$csdn-tech-blog-writer] 请根据这个 Spring Boot + MyBatis 项目生成一篇 CSDN 项目实战博客。
+用 $csdn-tech-blog-writer 根据 day02 笔记先出文章架构，不要超出我的笔记框架。
 ```
+
+知识点文：
 
 ```text
-[$csdn-tech-blog-writer] 请根据 Controller、Service、Mapper 和 Mapper XML，按三层架构讲解这个功能。
+用 $csdn-tech-blog-writer 写一篇 ThreadLocal 在登录认证里的知识点博客。
 ```
+
+项目功能文：
 
 ```text
-[$csdn-tech-blog-writer] 这是我以前写过的几篇博客，请参考我的风格，继续写新的项目模块博客。
+用 $csdn-tech-blog-writer 根据当前项目代码写员工分页查询功能，先给结构。
 ```
 
-更多示例可以查看 [examples/prompt-examples.md](examples/prompt-examples.md)。
+低分重写：
 
-## 推荐输入方式
+```text
+这篇只有 77 分，用 $csdn-tech-blog-writer 按评分问题重写。
+```
 
-为了让生成质量更稳定，建议尽量提供下面这些材料：
+更多示例见 [examples/prompt-examples.md](examples/prompt-examples.md)。
 
-- 项目根目录或核心包路径
-- `pom.xml` / `build.gradle`
-- `application.yml` / `application.properties`
-- Controller 层代码
-- Service 接口和实现类
-- Mapper 接口和 Mapper XML
-- 实体类、DTO、VO、查询参数类
-- 建表 SQL 或数据库字段说明
-- 已有博客样本，尤其是想保持个人风格时
+## 推荐输入
 
-如果是项目实战类博客，最好明确说明你想写哪个模块，例如“班级管理”“学员管理”“员工统计”“全局异常处理”等。
+- 用户笔记、草稿、评分反馈或旧文章。
+- 当前主题相关的 Controller、Service、Mapper、Mapper XML、实体类、DTO、VO。
+- `pom.xml` / `build.gradle`、`application.yml` / `application-dev.yml`。
+- SQL 表结构、接口路径、测试入口、真实报错或自测现象。
+- 如果要求保持个人风格，提供 1 到 3 篇旧文或一段已改好的正文。
 
-## 输出模式
+如果材料不足且会影响准确性，skill 会先补问最关键的一次；如果材料够用，就直接推进架构或正文。
 
-`csdn-tech-blog-writer` 支持多种输出意图：
+## 质量底线
 
-- `outline`：只生成博客大纲
-- `full`：生成完整 CSDN 正文
-- `polish`：润色已有博客
-- `series`：拆分成系列文章
-- `style`：分析已有博客风格
-- `style-adaptive`：按已有风格生成或续写
+- 不编造接口、字段、SQL、运行结果、截图或日志。
+- 不复制、不拼接、不洗稿其他博客。
+- 不把项目功能文、课程笔记文和知识点文混成一篇。
+- 不把真实密码、Token、AccessKey、Secret 写进文章。
+- 不用空泛口号收尾，结尾要沉淀一个可迁移方法。
+- 交付前检查主线、证据、验证入口、敏感信息和格式标记数量。
 
-## 项目类博客生成特点
+## 维护方式
 
-针对 Spring Boot + MyBatis / Tlias / JavaWeb 项目类博客，skill 会重点关注：
+如果某次写作失败，不要只改当前文章。把可复用的失败原因写回：
 
-- 功能需求是否讲清楚
-- 三层架构代码是否完整展示
-- Controller、Service、Mapper 的职责是否解释清楚
-- SQL 是否结合业务场景分析
-- 是否讲解分页、动态 SQL、关联查询、统计查询、异常处理、事务等高频知识点
-- 总结是否说明本篇模块的学习价值，而不是简单重复目录
+- `skills/csdn-tech-blog-writer/SKILL.md`
+- `skills/csdn-tech-blog-writer/references/core-writing-protocol.md`
 
-## 使用建议
+中文 skill 校验建议显式使用 UTF-8：
 
-推荐的使用流程：
-
-1. 先提供项目目录或核心代码文件。
-2. 说明文章类型：项目实战、知识点、大纲、润色或系列文章。
-3. 如果要保持个人风格，提供 1 到 3 篇已有博客。
-4. 先让 Codex 生成大纲或初稿。
-5. 再根据标题、章节、代码深度和语气进行二次调整。
-
-## 相关文件
-
-- 提示词示例：[examples/prompt-examples.md](examples/prompt-examples.md)
-- 输入材料示例：[examples/sample-inputs.md](examples/sample-inputs.md)
-- skill 说明：[skills/csdn-tech-blog-writer/README.md](skills/csdn-tech-blog-writer/README.md)
-- 核心规则：[skills/csdn-tech-blog-writer/SKILL.md](skills/csdn-tech-blog-writer/SKILL.md)
-- 项目博客模板：[skills/csdn-tech-blog-writer/templates/project-blog-template.md](skills/csdn-tech-blog-writer/templates/project-blog-template.md)
-
-## 注意事项
-
-- 本仓库只提供 Codex skill 文件，不提供独立 CLI 或 Web 服务。
-- 安装后需要重启 Codex，skill 才会被识别。
-- 生成博客时应以用户自己的代码为事实来源，不应复制或洗稿其他博客内容。
-- 如果配置文件中包含密码、Token、AccessKey 等敏感信息，生成内容时需要脱敏。
+```powershell
+python -X utf8 <quick_validate.py> .\skills\csdn-tech-blog-writer
+```
 
 ## 许可证
 
 本仓库基于 [MIT License](LICENSE) 开源。
-
-## 贡献
-
-如果要调整 skill 结构、模板或示例，可以参考 [CONTRIBUTING.md](CONTRIBUTING.md) 中的约定。

@@ -1,43 +1,60 @@
 # 提示词示例
 
-## 1. 项目博客初稿
+这些示例围绕新版 `csdn-tech-blog-writer` 的核心流程编写：先判断文章类型，先锁主题边界，再决定是否进入正文。
+
+## 1. 课程笔记文，先出架构
 
 ```text
-请使用 $csdn-tech-blog-writer 分析这个 Spring Boot 项目，并生成一篇完整的 CSDN 文章。
-重点围绕项目结构、核心业务流程、数据库设计，以及 API 分层展开。
+用 $csdn-tech-blog-writer 根据 day02 笔记先出一篇 CSDN 文章架构。
+要求只围绕笔记里的知识点，不要写完整员工 CRUD，也不要把第二篇功能实现混进来。
 ```
 
 ## 2. 知识点博客
 
 ```text
-请使用 $csdn-tech-blog-writer 把这个 ThreadLocal 工具类写成一篇 CSDN 知识点文章。
-请包含原理分析、使用示例、常见坑点，以及最佳实践。
+用 $csdn-tech-blog-writer 写一篇 @PathVariable 的知识点博客。
+请按使用场景、核心概念、最小代码、执行流程、常见坑、验证方式来写，不要强行写成项目三层实战。
 ```
 
-## 3. 先生成提纲
+## 3. 项目功能文
 
 ```text
-请使用 $csdn-tech-blog-writer 阅读这里的 controller、service、mapper 和 SQL，然后先只给我一个提纲。
-我现在想要的是项目实战类文章提纲，还不需要完整初稿。
+用 $csdn-tech-blog-writer 根据当前项目代码写员工分页查询功能。
+请先给文章架构，正文阶段再按 Controller -> Service -> Mapper/XML -> 验证方式 -> 常见失败点展开。
 ```
 
-## 4. 润色现有草稿
+## 4. 配置文件讲解
 
 ```text
-请使用 $csdn-tech-blog-writer 润色下面这篇文章草稿。
-保留我原本的语气风格，但提升表达清晰度、章节衔接和代码讲解质量。
+用 $csdn-tech-blog-writer 根据 application.yml 和 application-dev.yml 写一篇配置知识点博客。
+重点讲 spring.profiles.active、占位符取值、yml 缩进、配置加载链路和敏感信息脱敏。
 ```
 
-## 5. 风格自适应写作
+## 5. 低分重写
 
 ```text
-请使用 $csdn-tech-blog-writer 先分析我过去写的两篇博客，再按同样风格写一篇新的 CSDN 文章。
-不要直接照搬旧文章里的句子，只保留节奏、结构和语气风格。
+这篇文章只有 77 分。
+用 $csdn-tech-blog-writer 先列 3 条主要扣分原因，再重选主线重写。
+要求补验证入口、失败排查、适用边界和一个可迁移方法，不要只加字数。
 ```
 
-## 6. 系列文章拆分
+## 6. 草稿润色
 
 ```text
-请使用 $csdn-tech-blog-writer 把这个项目拆成一个 3 篇的 CSDN 系列文章。
-第 1 篇讲架构设计，第 2 篇讲核心 CRUD 逻辑，第 3 篇讲优化思路和常见坑点。
+用 $csdn-tech-blog-writer 润色下面这篇草稿。
+保留我已经改过的标题、章节顺序和删减意图，前言短一点，不要恢复被我删掉的长过渡。
+```
+
+## 7. 按用户风格修改
+
+```text
+用 $csdn-tech-blog-writer 按我的风格修改这篇文章。
+先读我给的旧文和当前草稿，提炼标题、段落长度、代码解释方式和总结习惯，再改正文。
+```
+
+## 8. 更新 skill 规则
+
+```text
+这次文章写偏了：第一篇明明是 day02 笔记知识点文，却写成了员工 CRUD 功能文。
+用 $csdn-tech-blog-writer 把这个失败原因更新进 skill，变成以后必须遵守的规则。
 ```
