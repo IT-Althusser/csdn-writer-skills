@@ -30,12 +30,13 @@
 ```text
 .
 ├── README.md
-└── csdn-tech-blog-writer/
-    ├── SKILL.md
-    ├── agents/
-    │   └── openai.yaml
-    └── references/
-        └── core-writing-protocol.md
+└── skills/
+    └── csdn-tech-blog-writer/
+        ├── SKILL.md
+        ├── agents/
+        │   └── openai.yaml
+        └── references/
+            └── core-writing-protocol.md
 ```
 
 `SKILL.md` 只保留触发描述、硬性执行顺序和关键输出习惯。真正详细的写作协议放在 `references/core-writing-protocol.md`，只有触发该 Skill 后再读取。
@@ -45,13 +46,13 @@
 如果已经把本仓库推到 GitHub，可以在 Codex 中让 Skill Installer 从仓库安装：
 
 ```text
-安装这个 skill：https://github.com/<owner>/<repo>/tree/main/csdn-tech-blog-writer
+安装这个 skill：https://github.com/IT-Althusser/csdn-writer-skills/tree/main/skills/csdn-tech-blog-writer
 ```
 
 也可以手动复制到本地 Codex skills 目录：
 
 ```powershell
-Copy-Item -Recurse -Force .\csdn-tech-blog-writer "$env:USERPROFILE\.codex\skills\csdn-tech-blog-writer"
+Copy-Item -Recurse -Force .\skills\csdn-tech-blog-writer "$env:USERPROFILE\.codex\skills\csdn-tech-blog-writer"
 ```
 
 安装或替换后，重启 Codex 才能让新的 Skill 元数据生效。
@@ -89,4 +90,4 @@ Copy-Item -Recurse -Force .\csdn-tech-blog-writer "$env:USERPROFILE\.codex\skill
 
 ## 维护原则
 
-后续如果某次写作失败，不要只修当前文章。应把可复用的失败原因沉淀到 `csdn-tech-blog-writer/SKILL.md` 或 `csdn-tech-blog-writer/references/core-writing-protocol.md` 中，让下一次触发 Skill 时自动避开同类问题。
+后续如果某次写作失败，不要只修当前文章。应把可复用的失败原因沉淀到 `skills/csdn-tech-blog-writer/SKILL.md` 或 `skills/csdn-tech-blog-writer/references/core-writing-protocol.md` 中，让下一次触发 Skill 时自动避开同类问题。
