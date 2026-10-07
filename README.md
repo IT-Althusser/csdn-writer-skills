@@ -1,133 +1,176 @@
 # csdn-writer-skills
 
-`csdn-writer-skills` 是一个给 Codex 使用的 CSDN 技术博客写作 skill 仓库。当前主力 skill 是 `csdn-tech-blog-writer`，用于把 Java / Spring Boot / MyBatis / MySQL 项目代码、课程 dayXX 笔记、单个技术知识点、用户草稿和评分反馈，整理成可发布的 CSDN Markdown 文章。
+这是一个给 Codex 使用的 CSDN 技术博客写作 skill。它把代码、课程笔记、知识点、旧稿和评分反馈，整理成一篇**面向读者讲清技术问题**的 Markdown 文章。
 
-这版重写的重点不是“多放模板”，而是把写作流程收束成一套稳定协议：先判断文章类型，先锁用户材料边界，再用代码和当前官方文档补证据，最后交付能直接发布的正文。
+它关注的不是把材料换一种说法，而是帮助文章回答一条完整的问题：读者在什么场景会遇到这个技术点，它解决了什么问题，代码或配置怎样参与执行，出现异常时从哪里验证，哪些边界不能忽略。
 
-## 核心变化
+当前仓库的主 skill 是 `csdn-tech-blog-writer`，重点覆盖 Java、Spring Boot、MyBatis 和 MySQL 项目中的知识点与功能说明，也支持根据实际材料调整文章边界。
 
-- 新文章默认先输出文章架构，用户确认后再写完整正文。
-- 明确区分知识点文、课程笔记文、项目功能文、低分重写和风格润色。
-- 课程 dayXX 笔记文必须以用户笔记为边界，不把另一篇功能实战混进来。
-- 知识点文按场景、概念、最小代码、执行流程、常见坑和验证方式写，不强行凑三层架构。
-- 项目功能文才展开 Controller -> Service -> Mapper/SQL 闭环。
-- 70/77/82 分这类低分反馈必须先找扣分原因，再重选主线重写。
-- 涉及库、框架、API、CLI 或云服务时，按工作区规则使用 `ctx7` 查询当前文档。
-- 配置文件、密码、Token、Secret、AccessKey、真实 IP、手机号、邮箱必须脱敏。
-- 引用、加粗、内联反引号要克制使用，交付前做格式数量自检。
+## 它怎样把材料写成讲解
 
-## 目录结构
+一篇能帮助读者理解的技术文章，通常沿着下面这条线展开：
+
+```text
+使用场景
+  -> 要解决的问题
+  -> 核心概念或执行机制
+  -> 最小必要代码 / 配置 / SQL
+  -> 请求、数据、线程或调用链怎样流动
+  -> 常见错误与验证方式
+  -> 适用边界和可迁移的判断方法
+```
+
+每一段材料都要承担解释作用：
+
+- **场景**说明技术点为什么会出现，避免从抽象定义开始。
+- **机制**说明参数、字段、配置或调用链怎样产生影响，而不是只贴 API 名称。
+- **代码**只保留理解当前问题所需的片段；代码后解释参数、返回值、配置项、SQL 条件和调用关系。
+- **验证**给出可以复现的请求、测试入口、日志位置或排查顺序。没有实际运行结果时，只写可验证路径或基于代码的推断。
+- **边界**说明笔记、项目代码和当前官方文档能够支持到哪里，不把无关功能补进文章。
+
+因此，文章不会把“定义 + 大段源码 + 总结”当成完整讲解，也不会用“下面展示实现”“把代码放进某个类”等句子安排读者拼装材料，而是直接解释代码正在做什么。
+
+## 先判断文章类型
+
+同样是“写一篇 CSDN”，不同材料需要不同主线。skill 会先判定类型，再决定文章结构：
+
+| 类型 | 适合讲什么 | 文章主线 |
+| --- | --- | --- |
+| 知识点博客 | 注解、API、机制、配置、报错或最佳实践 | 场景 → 概念 → 最小代码 → 执行流程 → 坑点 → 验证 |
+| 课程笔记文 | dayXX 笔记、课堂截图和同主题参考文章 | 保留笔记路线，只深入 3 至 5 个关键点 |
+| 项目功能文 | 一个真实功能及其接口、业务和持久化代码 | 需求 → Controller → Service → Mapper/SQL → 联调 |
+| 低分重写 | 带分数和评分反馈的旧文章 | 找出扣分原因 → 重选主线 → 补证据、验证和边界 |
+| 润色或风格适配 | 草稿、旧文和明确的删改要求 | 保留已有意图，调整表达、密度和段落节奏 |
+
+新文章默认先给**标题、文章类型、主线、目录、证据和边界**，用户确认后再写正文。用户明确要求“直接写全文”时，可以跳过架构阶段。
+
+## 适合提供哪些材料
+
+材料不需要越多越好，关键是能支撑当前主题：
+
+- 知识点：概念、最小代码、当前项目依赖或需要解释的报错。
+- 功能代码：Controller、Service、Mapper/XML、DTO、VO、实体类、SQL 和接口测试入口。
+- 课程文章：笔记正文、截图内容、文章主题，以及同主题参考文章。
+- 低分重写：原文、分数、评分反馈，以及允许补充的代码或资料范围。
+- 风格适配：一至三篇旧文、当前草稿、必须保留的段落和希望删除的表达。
+
+如果材料不足以确认接口、字段、运行结果或版本行为，skill 会先指出缺口，不会用猜测补齐事实。
+
+## 使用示例
+
+### 知识点：解释一个机制
+
+```text
+用 $csdn-tech-blog-writer 写一篇 ThreadLocal 在登录认证中的知识点博客。
+先给文章架构，按“使用场景、核心概念、最小代码、执行流程、常见坑、验证方式”组织，
+不要强行扩展成完整项目三层实战。
+```
+
+这里的重点是讲清“拦截器写入身份 → 后续业务读取 → 请求结束清理”的线程内数据流，而不是堆出一个无关的完整项目。
+
+### 课程笔记：严格沿着材料讲
+
+```text
+这是 day03 笔记，主题是后台接口自测和项目配置。
+用 $csdn-tech-blog-writer 先出文章架构，只围绕笔记已有知识点，
+不要补员工新增、分页、启禁用和编辑这些功能。
+```
+
+笔记和截图负责决定章节范围；参考文章可以帮助核验同主题的定义、流程和边界。不同章节的参考文只能借鉴解释方式，不能把新的知识点塞进当前文章。
+
+### 项目功能：让代码形成调用链
+
+```text
+用 $csdn-tech-blog-writer 根据当前项目代码写员工分页查询功能。
+先给架构，正文按 Controller -> Service -> Mapper/XML -> 验证方式 -> 常见失败点展开，
+不要扩展到新增、编辑和启禁用。
+```
+
+功能文章需要把请求参数、业务处理、SQL 条件和返回结果串起来；如果后续要补充分页插件或参数绑定，再单独解释它们在这条调用链中的位置。
+
+### 低分重写：重建文章主线
+
+```text
+这篇文章只有 77 分，问题是主线散、验证入口弱、代码解释不够。
+用 $csdn-tech-blog-writer 先列出 3 条扣分原因，再按“登录认证链路”重写，
+补充失败排查、适用边界和一个可迁移的方法，不要只替换同义词。
+```
+
+低分重写的目标是解决结构和证据问题，不是把原文继续加长。skill 不承诺固定分数或推荐结果。
+
+### 配置：解释取值链路并保护敏感信息
+
+```text
+用 $csdn-tech-blog-writer 根据 application.yml 和 application-dev.yml 写配置讲解。
+重点说明 spring.profiles.active、占位符取值、yml 缩进和配置加载链路，
+所有密码、Token、Secret、AccessKey 和真实地址都要脱敏。
+```
+
+配置文章应让读者知道公共配置、环境配置和占位符如何接起来，也要能根据启动失败定位激活环境、缩进和取值来源。
+
+## 质量边界
+
+- 不编造接口、字段、SQL、日志、截图、响应或运行结果。
+- 不把课程笔记、知识点和功能实现混成一篇，也不把笔记外的 CRUD 作为“补充完整”。
+- 涉及库、框架、API、CLI 或云服务的当前行为，按工作区规则查询 `ctx7` 或使用已核验的官方资料。
+- 真实密码、Token、Secret、AccessKey、手机号、邮箱、生产地址和其他个人数据必须脱敏。
+- SQL 主题文章中的 SQL 关键字使用小写；正文中的引用、加粗和反引号只在确实帮助阅读时保留。
+- 代码原有的中文步骤注释、编号注释和关键行内注释属于材料的一部分，展示时保留。
+
+这个 skill 适合写作和重写 CSDN 技术博客，不替代纯代码重构、单独的 bug 排查、只做代码审查的任务，也不把普通公众号文章当作目标输出。
+
+## 仓库结构
 
 ```text
 csdn-writer-skills/
   skills/
     csdn-tech-blog-writer/
-      agents/
-        openai.yaml
+      SKILL.md                         入口规则、触发场景和执行流程
+      agents/openai.yaml                Codex 中显示的名称和默认提示词
       references/
-        core-writing-protocol.md
-      SKILL.md
+        core-writing-protocol.md        文章类型、主线和验收协议
+        course-note-blogging.md         课程笔记与参考文章的处理方式
+        few-shot-examples.md            起手架构和重写示例
+        style-rules.md                  文风、格式、SQL 与配置细则
   examples/
-    prompt-examples.md
-    sample-inputs.md
+    prompt-examples.md                 可直接改写的提示词示例
+    sample-inputs.md                   输入材料示例
   CONTRIBUTING.md
   LICENSE
   README.md
 ```
 
-`SKILL.md` 只保留触发描述、硬性执行顺序和关键规则。详细写作协议集中在 `references/core-writing-protocol.md`，触发 skill 后再读取，避免旧版那种模板和规则分散导致跑题。
+## 安装与使用
 
-## 安装
+这是一个 Codex skill 文件夹，不是独立的命令行程序，也没有在本仓库声明额外运行时依赖。将 `skills/csdn-tech-blog-writer` 放入本地 Codex skills 目录后，重启 Codex，再使用 `$csdn-tech-blog-writer` 调用。
 
-### 使用 GitHub 路径安装
-
-在 Codex 中使用 skill installer 安装：
-
-```text
-安装这个 skill：https://github.com/IT-Althusser/csdn-writer-skills/tree/main/skills/csdn-tech-blog-writer
-```
-
-安装后重启 Codex。
-
-### 手动复制
-
-Windows：
+Windows PowerShell：
 
 ```powershell
 git clone https://github.com/IT-Althusser/csdn-writer-skills.git
-cd csdn-writer-skills
-Copy-Item -Recurse -Force .\skills\csdn-tech-blog-writer $HOME\.codex\skills\
+Copy-Item -Recurse -Force .\csdn-writer-skills\skills\csdn-tech-blog-writer $HOME\.codex\skills\
 ```
 
 macOS / Linux：
 
 ```bash
 git clone https://github.com/IT-Althusser/csdn-writer-skills.git
-cd csdn-writer-skills
-cp -R ./skills/csdn-tech-blog-writer ~/.codex/skills/
+cp -R ./csdn-writer-skills/skills/csdn-tech-blog-writer ~/.codex/skills/
 ```
 
-复制完成后重启 Codex。
+如果本地已经有同名技能，复制前应先查看现有改动，再决定是更新整个文件夹还是逐文件合并；不要用仓库版本覆盖自己尚未保存的规则。
 
-## 使用示例
+## 维护原则
 
-先出架构：
+一次写作出现偏题、越界、证据不足或解释过浅时，应把可复用的原因写回 `SKILL.md` 或对应的 `references/` 文件，而不是只修当前文章。修改后检查：
 
-```text
-用 $csdn-tech-blog-writer 根据 day02 笔记先出文章架构，不要超出我的笔记框架。
-```
+1. 文章类型是否仍然能正确区分。
+2. 用户材料是否仍然是事实边界。
+3. 代码解释是否说明了行为、参数、结果或风险。
+4. 没有运行验证时，是否明确写成验证路径或代码推断。
+5. 文档中是否残留敏感配置、模板占位符或来源话术。
 
-知识点文：
-
-```text
-用 $csdn-tech-blog-writer 写一篇 ThreadLocal 在登录认证里的知识点博客。
-```
-
-项目功能文：
-
-```text
-用 $csdn-tech-blog-writer 根据当前项目代码写员工分页查询功能，先给结构。
-```
-
-低分重写：
-
-```text
-这篇只有 77 分，用 $csdn-tech-blog-writer 按评分问题重写。
-```
-
-更多示例见 [examples/prompt-examples.md](examples/prompt-examples.md)。
-
-## 推荐输入
-
-- 用户笔记、草稿、评分反馈或旧文章。
-- 当前主题相关的 Controller、Service、Mapper、Mapper XML、实体类、DTO、VO。
-- `pom.xml` / `build.gradle`、`application.yml` / `application-dev.yml`。
-- SQL 表结构、接口路径、测试入口、真实报错或自测现象。
-- 如果要求保持个人风格，提供 1 到 3 篇旧文或一段已改好的正文。
-
-如果材料不足且会影响准确性，skill 会先补问最关键的一次；如果材料够用，就直接推进架构或正文。
-
-## 质量底线
-
-- 不编造接口、字段、SQL、运行结果、截图或日志。
-- 不复制、不拼接、不洗稿其他博客。
-- 不把项目功能文、课程笔记文和知识点文混成一篇。
-- 不把真实密码、Token、AccessKey、Secret 写进文章。
-- 不用空泛口号收尾，结尾要沉淀一个可迁移方法。
-- 交付前检查主线、证据、验证入口、敏感信息和格式标记数量。
-
-## 维护方式
-
-如果某次写作失败，不要只改当前文章。把可复用的失败原因写回：
-
-- `skills/csdn-tech-blog-writer/SKILL.md`
-- `skills/csdn-tech-blog-writer/references/core-writing-protocol.md`
-
-中文 skill 校验建议显式使用 UTF-8：
-
-```powershell
-python -X utf8 <quick_validate.py> .\skills\csdn-tech-blog-writer
-```
+本地技能来源：`C:\Users\fangxiaole\.codex\skills\csdn-tech-blog-writer`。
 
 ## 许可证
 
